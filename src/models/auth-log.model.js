@@ -14,6 +14,7 @@ const AuthLogSchema = new mongoose.Schema({
         enum: [
             "send_otp",
             "verify_otp",
+            "firebase_login",
             "login",
             "register",
             "logout",

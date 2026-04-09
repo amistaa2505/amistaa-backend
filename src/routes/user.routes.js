@@ -11,7 +11,7 @@ const {
     updateProfileSchema,
     updateLocationSchema,
     updateInterestsSchema,
-    searchUserSchema
+    searchUserSchema, updateRoleSchema
 } = require("../validators/user.validator");
 
 
@@ -27,6 +27,13 @@ router.put(
     validate(updateProfileSchema),
     userController.updateMe
 );
+
+router.put(
+    "/me/role",
+    authMiddleware,
+    validate(updateRoleSchema),
+    userController.updateRole
+)
 
 router.post(
     "/me/photo",

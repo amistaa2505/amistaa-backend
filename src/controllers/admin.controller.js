@@ -60,6 +60,38 @@ exports.globalBlockUser = async (req, res) => {
 };
 
 
+// 🔓 ADMIN UNBLOCK USER
+exports.adminUnblockUser = async (req, res) => {
+
+    const { userId } = req.body;
+
+    if (!userId) {
+        return res.status(400).json({
+            success: false,
+            message: "userId is required"
+        });
+    }
+
+    // Remove all active blocks
+    await UserBlock.updateMany(
+        { blockedUserId: userId, isActive: true },
+        { isActive: false }
+    );
+
+    // Log action
+    await BlockLog.create({
+        adminId: req.user.userId,
+        targetUserId: userId,
+        action: "unblock",
+        reason: "Admin unblock"
+    });
+
+    res.json({
+        success: true,
+        message: "User unblocked successfully"
+    });
+};
+
 // 📜 BLOCK LOGS
 exports.getBlockLogs = async (req, res) => {
 
@@ -69,3 +101,5 @@ exports.getBlockLogs = async (req, res) => {
 
     res.json({ success: true, data: logs });
 };
+
+

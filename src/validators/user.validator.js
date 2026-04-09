@@ -26,6 +26,10 @@ exports.updateProfileSchema = Joi.object({
         .max(200),
 });
 
+exports.updateRoleSchema = Joi.object({
+    role: Joi.string().valid("user", "creator")
+});
+
 exports.updateLocationSchema = Joi.object({
     lat: Joi.number().required(),
     lng: Joi.number().required(),

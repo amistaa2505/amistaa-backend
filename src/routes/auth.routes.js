@@ -5,6 +5,7 @@ const authController = require("../controllers/auth.controller");
 
 const validate = require("../middlewares/validate.middleware");
 const otpLimiter = require("../middlewares/otpLimiter.middleware");
+const authMiddleware = require("../middlewares/auth.middleware");
 
 const {
     sendOtpSchema,
@@ -28,7 +29,13 @@ router.post(
 );
 
 router.post(
+    "/firebase",
+    authController.firebaseLogin,
+);
+
+router.post(
     "/logout",
+    authMiddleware,
     validate(logoutSchema),
     authController.logout
 );

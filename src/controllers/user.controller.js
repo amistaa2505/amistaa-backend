@@ -73,6 +73,45 @@ exports.updateMe = async (req, res, next) => {
 
 };
 
+exports.updateRole = async (req, res, next) => {
+    try {
+
+        const userId = req.user.userId;
+        const {role} = req.body;
+
+        const user = await User.findByIdAndUpdate(
+            userId,
+            {role: role},
+            {
+                new: true,
+                runValidators: true,
+            }
+        );
+
+        await UserActivityLog.create({
+            userId: req.user.userId,
+            action: "role_update",
+            ip: req.ip,
+            device: req.headers["device-name"]
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        return res.json({
+            success: true,
+            data: UserSerializer.serialize(user)
+        });
+
+    } catch (e) {
+        next(err);
+    }
+};
+
 exports.uploadPhoto = async (req, res, next) => {
     try {
 
@@ -85,8 +124,8 @@ exports.uploadPhoto = async (req, res, next) => {
 
         const user = await User.findByIdAndUpdate(
             req.user.userId,
-            { avatar: req.file.filename },
-            { new: true }
+            {avatar: req.file.filename},
+            {new: true}
         );
 
         res.json({
@@ -105,7 +144,7 @@ exports.updateLocation = async (req, res, next) => {
 
     try {
 
-        const { lat, lng, city, country } = req.body;
+        const {lat, lng, city, country} = req.body;
 
         const user = await User.findByIdAndUpdate(
             req.user.userId,
@@ -117,7 +156,7 @@ exports.updateLocation = async (req, res, next) => {
                 city,
                 country
             },
-            { new: true }
+            {new: true}
         );
 
         res.json({
@@ -143,12 +182,12 @@ exports.updateInterests = async (req, res, next) => {
 
     try {
 
-        const { interests } = req.body;
+        const {interests} = req.body;
 
         const user = await User.findByIdAndUpdate(
             req.user.userId,
-            { interests },
-            { new: true }
+            {interests},
+            {new: true}
         );
 
         await UserActivityLog.create({
@@ -178,10 +217,10 @@ exports.searchUsers = async (req, res, next) => {
 
     try {
 
-        const { keyword } = req.query;
+        const {keyword} = req.query;
 
         const users = await User.find({
-            username: { $regex: keyword, $options: "i" }
+            username: {$regex: keyword, $options: "i"}
         }).limit(20);
 
         await UserActivityLog.create({
@@ -205,7 +244,7 @@ exports.nearbyUsers = async (req, res, next) => {
 
     try {
 
-        const { lat, lng } = req.query;
+        const {lat, lng} = req.query;
 
         const users = await User.find({
             location: {

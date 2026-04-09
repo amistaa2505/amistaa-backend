@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const Session = require("../models/session.model");
 
 module.exports = (req, res, next) => {
 
@@ -32,5 +33,4 @@ module.exports = (req, res, next) => {
         next(err);
 
     }
-
 };

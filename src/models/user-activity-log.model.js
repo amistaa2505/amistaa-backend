@@ -13,6 +13,7 @@ const UserActivityLogSchema = new mongoose.Schema({
             "view_profile",
             "update_profile",
             "upload_photo",
+            "role_update",
             "update_location",
             "update_interests",
             "search_users",
